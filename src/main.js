@@ -55,6 +55,16 @@ function boot() {
   });
   window.addEventListener('resize', () => scaler.resize());
 
+  // 커서는 움직이면 보이고, 2.5초 가만히 두면 숨는다
+  let cursorTimer = 0;
+  const showCursor = () => {
+    root.classList.remove('cursor-idle');
+    clearTimeout(cursorTimer);
+    cursorTimer = setTimeout(() => root.classList.add('cursor-idle'), 2500);
+  };
+  window.addEventListener('mousemove', showCursor);
+  window.addEventListener('mousedown', showCursor);
+
   // 루프 안에서 예외가 나면 기록하고 대기화면으로. 멈춘 화면으로 두지 않는다. (PRD 8.1)
   let errors = 0;
   const guard = (fn) => {

@@ -12,13 +12,14 @@
     width: 100%;
     height: 100vh;
     background: #000;
-    cursor: none;              /* 전시장 커서 숨김 (PRD 7.1) */
     user-select: none;
     -webkit-user-select: none;
     touch-action: none;
     overflow: hidden;
   }
   #rain-canvas { display: block; width: 100%; height: 100%; }
+  /* 마우스를 잠시 안 움직이면 커서를 숨긴다 — 전시장에선 안 보이고, 웹에선 움직이면 바로 보인다 (PRD 7.1) */
+  #rain-game.cursor-idle { cursor: none; }
 
   /* 인터넷 없이 돌아야 한다 — 폰트는 로컬 파일만. (PRD 1-7) */
   @font-face {
