@@ -72,9 +72,10 @@ export class AttractScene {
     text(ctx, S.pressAnyToJoin, CFG.view.w / 2, 930, {
       size: 50, color: THEME.color.textStrong, weight: 800, alpha: blink,
     });
-    text(ctx, S.totalTons(this.rec.totalTons), CFG.view.w / 2, 1000, { size: 28, color: THEME.color.dim });
-    text(ctx, S.earthRecord(this.rec.earthSaved, this.rec.earthLost), CFG.view.w / 2, 1042, {
-      size: 24, color: THEME.color.dim,
+    text(ctx, S.attractHowTo, CFG.view.w / 2, 985, { size: 26, color: THEME.color.text, weight: 600 });
+    text(ctx, S.totalTons(this.rec.totalTons), CFG.view.w / 2, 1028, { size: 28, color: THEME.color.dim });
+    text(ctx, S.earthRecord(this.rec.earthSaved, this.rec.earthLost), CFG.view.w / 2, 1062, {
+      size: 22, color: THEME.color.dim,
     });
   }
 }

@@ -13,15 +13,20 @@ export const S = {
   prologueTag: ['', 'Spring cleaning', 'R.A.I.N. Day', ''],
 
   pressAnyToJoin: '아무 버튼이나 눌러 참가',
+  attractHowTo: '참가한 뒤 L · R 버튼으로 조작법을 볼 수 있어요',
   totalTons: (n) => `지금까지 U.S.가 치운 우주 쓰레기 ${n} 톤`,
   earthRecord: (saved, lost) => `지켜낸 지구 ${saved}회  ·  망한 지구 ${lost}회`,
 
   joinTitle: '대원 모집',
   joinHint: '버튼을 눌러 참가',
-  joinReady: '준비 완료',
-  joinSolo: '1명이면 솔로 임무',
+  joinReady: '출발 준비 완료!',
+  joinPressGo: (k) => `${k} 누르면 바로 출발`,
+  joinPressHowTo: (l, r) => `${l} · ${r}  조작법 보기`,
+  joinFooter: '참가자가 모두 출발을 누르면 바로 시작  ·  1명이면 솔로 임무',
 
-  briefTitle: '작전 브리핑',
+  howToTitle: '조작법',
+  howToRules: '배낭에 모아 한 번에 넣을수록 점수가 뛴다  ·  배낭이 무거우면 느려진다',
+  howToClose: 'L · R = 닫기     M = 출발 준비',
   briefMove: '이동',
   briefGrab: '잡기 · 수거선 아래에서는 넣기',
   briefDash: '두 번 빠르게 = 그 방향으로 박치기',

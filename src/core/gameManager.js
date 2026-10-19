@@ -10,14 +10,12 @@ import { HITSTOP } from '../fx/hitstop.js';
 
 import { AttractScene } from '../scenes/attract.js';
 import { JoinScene } from '../scenes/join.js';
-import { BriefingScene } from '../scenes/briefing.js';
 import { PlayScene } from '../scenes/play.js';
 import { ResultScene } from '../scenes/result.js';
 
 const SCENES = {
   [ST.ATTRACT]: AttractScene,
   [ST.JOIN]: JoinScene,
-  [ST.BRIEFING]: BriefingScene,
   [ST.PLAY]: PlayScene,
   [ST.RESULT]: ResultScene,
 };

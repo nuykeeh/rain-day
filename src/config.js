@@ -10,7 +10,6 @@ export const DEFAULTS = {
   flow: {
     attractPanelSeconds: 5,
     joinCountdown: 8,
-    briefingSeconds: 5,
     playSeconds: 90,
     resultSeconds: 10,
     idleTimeoutSeconds: 30,

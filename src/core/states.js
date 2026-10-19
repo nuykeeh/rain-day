@@ -3,7 +3,6 @@
 export const ST = {
   ATTRACT: 'ATTRACT',
   JOIN: 'JOIN',
-  BRIEFING: 'BRIEFING',
   PLAY: 'PLAY',
   RESULT: 'RESULT',
 };

@@ -13,7 +13,7 @@ test('3인 한 판이 RESULT까지 끝까지 진행된다', async ({ page }) => 
 
   const history = await page.evaluate(() => window.__RAIN_HISTORY__);
   expect(history[0]).toBe('ATTRACT');
-  for (const s of ['JOIN', 'BRIEFING', 'PLAY', 'RESULT']) expect(history).toContain(s);
+  for (const s of ['JOIN', 'PLAY', 'RESULT']) expect(history).toContain(s);
 
   const res = await page.evaluate(() => window.__RAIN__.gm.session.result);
   expect(res.order.length).toBe(3);
@@ -56,9 +56,17 @@ test('참가 화면', async ({ page }) => {
   expect(e).toEqual([]);
 });
 
-test('브리핑 화면', async ({ page }) => {
+test('조작법 화면 (참가 후 L·R)', async ({ page }) => {
   const e = watchErrors(page);
-  await shotAt(page, { state: 'BRIEFING', after: 1.0, name: '03-briefing', speed: 1 });
+  await page.goto('/');
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'ATTRACT');
+  await page.keyboard.press('KeyZ');
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'JOIN');
+  await page.keyboard.press('KeyV');
+  await page.waitForTimeout(150);
+  await page.keyboard.press('KeyZ');   // 1P 의 L = 조작법 열기
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: `${SHOTS}/03-howto.png` });
   expect(e).toEqual([]);
 });
 
@@ -187,9 +195,55 @@ test('키보드 실제 입력으로 참가한다 (event.code 판정)', async ({ 
   await page.waitForFunction(() => window.__RAIN_STATE__ === 'JOIN');
   await page.keyboard.press('KeyB');
   await page.keyboard.press('Comma');
-  await page.waitForFunction(() => window.__RAIN_STATE__ === 'BRIEFING', null, { timeout: 15_000 });
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'PLAY', null, { timeout: 15_000 });
   const s = await page.evaluate(() => window.__RAIN_SESSION__);
   expect(s.slots).toEqual([0, 1, 2]);
+  expect(errors).toEqual([]);
+});
+
+test('참가자 전원이 M 을 누르면 카운트다운 없이 바로 시작한다', async ({ page }) => {
+  const errors = watchErrors(page);
+  await page.goto('/');
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'ATTRACT');
+  await page.keyboard.press('KeyZ');
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'JOIN');
+  await page.keyboard.press('KeyB');          // 2P 참가
+  await page.waitForTimeout(150);
+  await page.keyboard.press('KeyX');          // 1P 출발 준비 — 아직 2P 가 남았다
+  await page.waitForTimeout(300);
+  expect(await page.evaluate(() => window.__RAIN_STATE__)).toBe('JOIN');
+  const t0 = Date.now();
+  await page.keyboard.press('KeyB');          // 2P 출발 준비 → 전원 준비
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'PLAY', null, { timeout: 2_000 });
+  expect(Date.now() - t0).toBeLessThan(1500);  // 8초 카운트다운을 기다리지 않았다
+  const s = await page.evaluate(() => window.__RAIN_SESSION__);
+  expect(s.slots).toEqual([0, 1]);
+  expect(await page.evaluate(() => window.__RAIN_HISTORY__)).not.toContain('BRIEFING');
+  expect(errors).toEqual([]);
+});
+
+test('L·R 로 조작법을 열면 카운트다운이 멈추고, 다시 누르면 닫힌다', async ({ page }) => {
+  const errors = watchErrors(page);
+  await page.goto('/');
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'ATTRACT');
+  await page.keyboard.press('KeyZ');
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'JOIN');
+  await page.waitForTimeout(150);
+  await page.keyboard.press('KeyC');          // 1P 의 R = 열기
+  await page.waitForFunction(() => window.__RAIN__.gm.scene.howTo === true);
+  const a = await page.evaluate(() => window.__RAIN__.gm.scene.left);
+  await page.waitForTimeout(1000);
+  const b = await page.evaluate(() => window.__RAIN__.gm.scene.left);
+  expect(b).toBeCloseTo(a, 5);                // 보는 동안은 안 줄어든다
+  await page.keyboard.press('KeyZ');          // 1P 의 L = 닫기
+  await page.waitForFunction(() => window.__RAIN__.gm.scene.howTo === false);
+  await page.waitForTimeout(500);
+  const c = await page.evaluate(() => window.__RAIN__.gm.scene.left);
+  expect(c).toBeLessThan(b);                  // 닫으면 다시 흐른다
+  await page.keyboard.press('KeyC');          // 다시 열고
+  await page.waitForFunction(() => window.__RAIN__.gm.scene.howTo === true);
+  await page.keyboard.press('KeyX');          // M = 닫고 출발 → 혼자니까 바로 시작
+  await page.waitForFunction(() => window.__RAIN_STATE__ === 'PLAY', null, { timeout: 2_000 });
   expect(errors).toEqual([]);
 });
 
